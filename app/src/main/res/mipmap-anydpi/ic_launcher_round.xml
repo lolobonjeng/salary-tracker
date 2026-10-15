@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Legacy round launcher icon (API 21-25). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <path
+        android:fillColor="#006D3B"
+        android:pathData="M54,4 a50,50 0 1 0 0,100 a50,50 0 1 0 0,-100 Z" />
+    <path
+        android:fillColor="#00C46A"
+        android:pathData="M54,4 a50,50 0 0 1 0,100 a50,50 0 0 1 0,-100 Z"
+        android:fillAlpha="0.35" />
+
+    <!-- Banknote -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M32,42 L76,42 A5,5 0 0 1 81,47 L81,65 A5,5 0 0 1 76,70 L32,70 A5,5 0 0 1 27,65 L27,47 A5,5 0 0 1 32,42 Z" />
+
+    <!-- Coin -->
+    <path
+        android:fillColor="#006D3B"
+        android:pathData="M45,56 a9,9 0 1 0 18,0 a9,9 0 1 0 -18,0 Z" />
+
+    <!-- Side marks -->
+    <path
+        android:fillColor="#006D3B"
+        android:pathData="M33,51 L36,51 L36,61 L33,61 Z" />
+    <path
+        android:fillColor="#006D3B"
+        android:pathData="M72,51 L75,51 L75,61 L72,61 Z" />
+</vector>

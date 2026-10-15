@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Material 3 palette, money-green theme (dark) -->
+    <color name="primary">#80DBA0</color>
+    <color name="onPrimary">#00391C</color>
+    <color name="primaryContainer">#00522A</color>
+    <color name="onPrimaryContainer">#9BF6BB</color>
+
+    <color name="secondary">#B6CCB8</color>
+    <color name="onSecondary">#223527</color>
+    <color name="secondaryContainer">#384B3D</color>
+    <color name="onSecondaryContainer">#D2E8D5</color>
+
+    <color name="tertiary">#A2CDDB</color>
+    <color name="onTertiary">#023540</color>
+    <color name="tertiaryContainer">#214C57</color>
+    <color name="onTertiaryContainer">#BEEAF7</color>
+
+    <color name="error">#FFB4AB</color>
+    <color name="onError">#690005</color>
+    <color name="errorContainer">#93000A</color>
+    <color name="onErrorContainer">#FFDAD6</color>
+
+    <color name="background">#191C1A</color>
+    <color name="onBackground">#E1E3DF</color>
+    <color name="surface">#191C1A</color>
+    <color name="onSurface">#E1E3DF</color>
+    <color name="surfaceVariant">#424940</color>
+    <color name="onSurfaceVariant">#C2C9BE</color>
+    <color name="outline">#8C9388</color>
+    <color name="outlineVariant">#424940</color>
+
+    <!-- Always-dark chrome so white system icons stay readable -->
+    <color name="chrome">#00130A</color>
+
+    <!-- App-specific accents -->
+    <color name="accentOt">#FFD08A</color>
+    <color name="accentOtContainer">#5C4200</color>
+    <color name="chartBase">#4CC27E</color>
+    <color name="chartOt">#FFC46B</color>
+    <color name="chartTrack">#2A2F2B</color>
+    <color name="positive">#80DBA0</color>
+    <color name="neutral">#8C9388</color>
+</resources>

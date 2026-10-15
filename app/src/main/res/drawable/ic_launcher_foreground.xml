@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Banknote -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M30,38 L78,38 A6,6 0 0 1 84,44 L84,64 A6,6 0 0 1 78,70 L30,70 A6,6 0 0 1 24,64 L24,44 A6,6 0 0 1 30,38 Z" />
+
+    <!-- Coin -->
+    <path
+        android:fillColor="#006D3B"
+        android:pathData="M44,54 a10,10 0 1 0 20,0 a10,10 0 1 0 -20,0 Z" />
+
+    <!-- Side marks -->
+    <path
+        android:fillColor="#006D3B"
+        android:pathData="M31,48 L34,48 L34,60 L31,60 Z" />
+    <path
+        android:fillColor="#006D3B"
+        android:pathData="M74,48 L77,48 L77,60 L74,60 Z" />
+</vector>

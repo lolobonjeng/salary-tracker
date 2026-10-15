@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="screen_pad">16dp</dimen>
+    <dimen name="card_pad">18dp</dimen>
+    <dimen name="card_gap">12dp</dimen>
+    <dimen name="corner">20dp</dimen>
+    <dimen name="pill_pad_h">10dp</dimen>
+    <dimen name="pill_pad_v">4dp</dimen>
+    <dimen name="chart_height">170dp</dimen>
+    <dimen name="bar_min_width">6dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="list_bottom_inset">96dp</dimen>
+</resources>

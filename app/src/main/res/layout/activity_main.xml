@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorSurface"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:menu="@menu/menu_main"
+            app:title="@string/app_name"
+            app:titleTextAppearance="@style/TextAppearance.Material3.TitleLarge" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/list_bottom_inset"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/screen_pad"
+            android:paddingTop="4dp"
+            android:paddingEnd="@dimen/screen_pad">
+
+            <!-- ============ CUTOFF NAVIGATOR ============ -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.SalaryTracker.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="2dp">
+
+                        <ImageButton
+                            android:id="@+id/btnPrev"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/prev_cutoff"
+                            android:src="@drawable/ic_chevron_left" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/TextAppearance.SalaryTracker.Label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/cutoff_label" />
+
+                            <TextView
+                                android:id="@+id/txtPeriod"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?attr/textAppearanceTitleLarge"
+                                android:textStyle="bold"
+                                tools:text="Sep 16-30, 2026" />
+
+                            <TextView
+                                android:id="@+id/txtPeriodRange"
+                                style="@style/TextAppearance.SalaryTracker.Label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:text="Wed, Sep 16 — Wed, Sep 30" />
+                        </LinearLayout>
+
+                        <ImageButton
+                            android:id="@+id/btnNext"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/next_cutoff"
+                            android:src="@drawable/ic_chevron_right" />
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnToday"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="4dp"
+                        android:minHeight="32dp"
+                        android:text="@string/jump_today"
+                        android:textSize="12sp"
+                        app:icon="@drawable/ic_today"
+                        app:iconSize="16dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ============ NET PAY SUMMARY ============ -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/card_gap"
+                app:cardBackgroundColor="?attr/colorPrimary"
+                app:cardCornerRadius="@dimen/corner"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/card_pad">
+
+                    <TextView
+                        style="@style/TextAppearance.SalaryTracker.Label.OnPrimary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/net_pay" />
+
+                    <TextView
+                        android:id="@+id/txtNetPay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:textSize="36sp"
+                        android:textStyle="bold"
+                        tools:text="₱1,550.00" />
+
+                    <TextView
+                        android:id="@+id/txtNetSub"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:alpha="0.85"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:textSize="13sp"
+                        tools:text="3 days worked" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="14dp"
+                        android:alpha="0.25"
+                        android:background="?attr/colorOnPrimary" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/TextAppearance.SalaryTracker.Label.OnPrimary"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/days_worked" />
+
+                            <TextView
+                                android:id="@+id/txtDaysWorked"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="?attr/colorOnPrimary"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                tools:text="3" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/TextAppearance.SalaryTracker.Label.OnPrimary"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/base_pay_total" />
+
+                            <TextView
+                                android:id="@+id/txtBaseTotal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="?attr/colorOnPrimary"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                tools:text="1,800.00" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/TextAppearance.SalaryTracker.Label.OnPrimary"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/overtime_total" />
+
+                            <TextView
+                                android:id="@+id/txtOtTotal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="?attr/colorOnPrimary"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                tools:text="0.00" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="10dp"
+                        android:alpha="0.25"
+                        android:background="?attr/colorOnPrimary" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/TextAppearance.SalaryTracker.Label.OnPrimary"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/gross_pay" />
+
+                        <TextView
+                            android:id="@+id/txtGrossPay"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="?attr/colorOnPrimary"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            tools:text="1,800.00" />
+                    </LinearLayout>
+
+                    <!-- Benefits — i-tap para maglagay ng bawas -->
+                    <LinearLayout
+                        android:id="@+id/rowBenefits"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:minHeight="44dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/TextAppearance.SalaryTracker.Label.OnPrimary"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/benefits" />
+
+                        <TextView
+                            android:id="@+id/txtBenefits"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="?attr/colorOnPrimary"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            tools:text="−250.00" />
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="8dp"
+                            android:contentDescription="@string/benefits_edit_cd"
+                            android:src="@drawable/ic_edit"
+                            android:tint="?attr/colorOnPrimary" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/txtBenefitsHint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="2dp"
+                        android:alpha="0.7"
+                        android:text="@string/benefits_none"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:textSize="11sp"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ============ CHART ============ -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.SalaryTracker.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/card_gap">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/card_pad">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/daily_earnings"
+                            android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                        <View
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
+                            android:background="@drawable/dot_base" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:text="@string/chart_legend_base"
+                            android:textAppearance="?attr/textAppearanceLabelMedium" />
+
+                        <View
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
+                            android:layout_marginStart="12dp"
+                            android:background="@drawable/dot_ot" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:text="@string/chart_legend_ot"
+                            android:textAppearance="?attr/textAppearanceLabelMedium" />
+                    </LinearLayout>
+
+                    <com.cronzph.salarytracker.ui.BarChartView
+                        android:id="@+id/chart"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/chart_height"
+                        android:layout_marginTop="14dp"
+                        android:contentDescription="@string/cd_chart" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ============ RECENT ENTRIES ============ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/recent_entries"
+                    android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnViewAll"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="0dp"
+                    android:text="@string/view_all" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/recentContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="vertical" />
+
+            <TextView
+                android:id="@+id/txtEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="28dp"
+                android:paddingBottom="28dp"
+                android:text="@string/empty_dashboard"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:visibility="gone"
+                tools:visibility="visible" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fabAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:text="@string/add_entry"
+        app:icon="@drawable/ic_add" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,144 @@
+<resources>
+    <string name="app_name">Salary Tracker</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_title">Salary Tracker</string>
+    <string name="cutoff_label">CUTOFF</string>
+    <string name="prev_cutoff">Previous cutoff</string>
+    <string name="next_cutoff">Next cutoff</string>
+    <string name="jump_today">Today</string>
+    <string name="total_payout">Total payout</string>
+    <string name="net_pay">NET PAY</string>
+    <string name="net_short">NET</string>
+    <string name="gross_pay">Gross pay</string>
+    <string name="benefits">Benefits (bawas)</string>
+    <string name="benefits_none">Wala pang bawas</string>
+    <string name="benefits_dialog_title">Bawas sa cutoff na ito</string>
+    <string name="benefits_dialog_hint">Halaga ng bawas</string>
+    <string name="benefits_saved">Nai-save ang bawas</string>
+    <string name="benefits_clear">Walang bawas</string>
+    <string name="benefits_dialog_period">Cutoff: %1$s</string>
+    <string name="benefits_edit_cd">I-edit ang bawas</string>
+    <string name="days_worked">Days worked</string>
+    <string name="base_pay_total">Base pay</string>
+    <string name="overtime_total">Overtime</string>
+    <string name="daily_earnings">Daily earnings</string>
+    <string name="chart_legend_base">Base</string>
+    <string name="chart_legend_ot">OT</string>
+    <string name="recent_entries">Recent entries</string>
+    <string name="view_all">View all</string>
+    <string name="add_entry">Add entry</string>
+    <string name="empty_dashboard">Wala pang entry sa cutoff na ito.\nPindutin ang + para magdagdag.</string>
+
+    <!-- Entry -->
+    <string name="entry_title_new">New entry</string>
+    <string name="entry_title_edit">Edit entry</string>
+    <string name="field_date">Date</string>
+    <string name="field_day_type">Day type</string>
+    <string name="type_work">Work</string>
+    <string name="type_day_off">Day off</string>
+    <string name="type_absent">Absent</string>
+    <string name="field_base_pay">Daily salary</string>
+    <string name="field_ot_hours">OT hours</string>
+    <string name="field_ot_amount">OT amount</string>
+    <string name="field_notes">Notes (optional)</string>
+    <string name="hint_ot_hours">e.g. 1</string>
+    <string name="hint_notes">hal. Night shift, holiday…</string>
+    <string name="switch_override_ot">I-override ang OT amount</string>
+    <string name="ot_auto_hint">Auto: %1$s/hr \u00D7 %2$s \u00D7 %3$s hr = %4$s</string>
+    <string name="ot_no_ot">Walang OT sa araw na ito</string>
+    <string name="ot_not_workday">Hindi work day — walang base pay at OT</string>
+    <string name="entry_total">Total ng araw na ito</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="confirm_delete_title">Delete entry?</string>
+    <string name="confirm_delete_msg">Mabubura na permanente ang entry para sa %1$s.</string>
+
+    <!-- History -->
+    <string name="history_title">History</string>
+    <string name="export_share">Export / Share</string>
+    <string name="share_summary">Share summary</string>
+    <string name="save_csv">Save CSV</string>
+    <string name="empty_history">Wala pang naka-record na araw.</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_pay">Pay settings</string>
+    <string name="settings_rate">Daily rate</string>
+    <string name="settings_rate_desc">Base salary mo kada araw ng trabaho</string>
+    <string name="settings_mult">OT multiplier</string>
+    <string name="settings_mult_desc">1.25 = regular OT, 1.30 = night diff, 2.0 = holiday</string>
+    <string name="settings_hours">Hours per day</string>
+    <string name="settings_hours_desc">Ginagamit para i-compute ang hourly rate</string>
+    <string name="settings_derived">Hourly rate</string>
+    <string name="settings_ot_preview">OT rate (1 hr)</string>
+    <string name="settings_data">Data</string>
+    <string name="settings_default_entry">Default entry</string>
+    <string name="settings_default_type">Default day type</string>
+    <string name="settings_default_type_desc">Ito ang naka-prefill na type sa bagong entry</string>
+    <string name="settings_default_ot">Default OT hours</string>
+    <string name="settings_default_ot_desc">Iwan na 0 kung walang regular na OT</string>
+    <string name="settings_clear">Clear all entries</string>
+    <string name="settings_clear_desc">Permanenteng buburahin lahat ng araw at lahat ng bawas</string>
+    <string name="settings_reset">Reset settings</string>
+    <string name="settings_about">Tungkol</string>
+    <string name="settings_about_desc">Salary Tracker v%1$s \u2014 semi-monthly cutoff, auto OT sa 1.25x.</string>
+
+    <!-- Update -->
+    <string name="update_section">UPDATE</string>
+    <string name="update_check">Check for updates</string>
+    <string name="update_check_desc">Tingnan kung may bagong version</string>
+    <string name="update_current">Naka-install: %1$s</string>
+    <string name="update_checking">Sinusuri ang update\u2026</string>
+    <string name="update_up_to_date">Pinakabago na ang app mo</string>
+    <string name="update_available_title">May bagong version: %1$s</string>
+    <string name="update_size">Laki: %1$s</string>
+    <string name="update_whats_new">Ano ang bago</string>
+    <string name="update_download">I-download</string>
+    <string name="update_install">I-install</string>
+    <string name="update_download_title">Nagda-download ng update</string>
+    <string name="update_later">Mamaya na</string>
+    <string name="update_skip">Huwag na sa version na ito</string>
+    <string name="update_downloading">Nagda-download\u2026 %1$d%%</string>
+    <string name="update_no_release">Wala pang update na naka-publish</string>
+    <string name="update_offline">Walang internet connection</string>
+    <string name="update_rate_limited">Masyadong maraming check \u2014 subukan mamaya</string>
+    <string name="update_error">Hindi ma-check ang update: %1$s</string>
+    <string name="update_no_apk">Walang APK na naka-attach sa release</string>
+    <string name="update_same_version">Kapareho lang ng naka-install \u2014 hindi ito i-install</string>
+    <string name="update_need_unknown_sources">Payagan muna ang pag-install ng app sa settings</string>
+    <string name="update_sig_title">Hindi tugma ang signature</string>
+    <string name="update_sig_msg">Iba ang signing key ng update kaysa sa naka-install na app. Para ma-install ito, kailangang i-uninstall ang app \u2014 at mabubura lahat ng sahod at bawas mo.\n\nI-export muna ang CSV sa History bago magpatuloy.</string>
+    <string name="update_install_failed">Hindi na-install: %1$s</string>
+    <string name="update_ready_title">Tapos na ang update</string>
+    <string name="update_ready_text">I-tap para buksan ang Salary Tracker</string>
+    <string name="update_install_ready">Naka-download na \u2014 i-tap para i-install</string>
+    <string name="update_channel_name">Mga update</string>
+    <string name="update_channel_desc">Abiso kapag may bagong version</string>
+    <string name="update_auto_check">Auto-check sa pagbukas</string>
+    <string name="update_auto_check_desc">Awtomatikong titingnan kung may update tuwing bubuksan ang app</string>
+    <string name="update_cd">Update</string>
+
+    <!-- Feedback -->
+    <string name="saved">Nai-save na</string>
+    <string name="deleted">Nabura na</string>
+    <string name="cleared">Nabura na lahat ng entries</string>
+    <string name="reset_done">Na-reset sa default</string>
+    <string name="csv_saved">CSV saved: %1$s</string>
+    <string name="csv_failed">Hindi na-save ang CSV</string>
+    <string name="nothing_to_export">Walang laman na i-export</string>
+    <string name="confirm_clear_title">Clear all entries?</string>
+    <string name="confirm_clear_msg">Hindi na ito maibabalik.</string>
+    <string name="invalid_amount">Ilagay ang tamang amount</string>
+    <string name="share_via">I-share ang summary</string>
+    <string name="date_has_entry">May entry na sa petsang ito \u2014 ni-load na para i-edit</string>
+    <string name="summary_subject">Salary summary</string>
+    <string name="csv_subject">Salary CSV</string>
+
+    <!-- Misc -->
+    <string name="action_ok">OK</string>
+    <string name="cd_chart">Bar chart ng arawang kita</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_history">History</string>
+</resources>
