@@ -62,6 +62,20 @@
     <string name="save_csv">Save CSV</string>
     <string name="empty_history">Wala pang naka-record na araw.</string>
 
+    <!-- Backup -->
+    <string name="backup_excel">Excel backup (.xlsx)</string>
+    <string name="backup_restore">Restore from backup</string>
+    <string name="backup_saving">Ginagawa ang backup\u2026</string>
+    <string name="backup_done">Nai-save ang backup:\n%1$s</string>
+    <string name="backup_failed">Hindi nagawa ang backup: %1$s</string>
+    <string name="restore_title">I-restore ang backup?</string>
+    <string name="restore_msg">Maidaragdag ang %1$d entries at %2$d bawas.\n\nHindi buburahin ang existing mo \u2014 kung may kaparehong petsa, ang nasa backup ang mananaig.</string>
+    <string name="restore_skipped">%1$d row ang nalaktawan (hindi mabasa ang petsa)</string>
+    <string name="restore_confirm">I-restore</string>
+    <string name="restore_done">Na-restore: %1$d entries, %2$d bawas</string>
+    <string name="restore_empty">Walang nabasang entry sa file</string>
+    <string name="restore_failed">Hindi ma-restore: %1$s</string>
+
     <!-- Settings -->
     <string name="settings_title">Settings</string>
     <string name="settings_pay">Pay settings</string>
