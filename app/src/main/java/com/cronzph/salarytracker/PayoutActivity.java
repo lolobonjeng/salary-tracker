@@ -19,11 +19,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.cronzph.salarytracker.data.Payout;
 import com.cronzph.salarytracker.data.SalaryDbHelper;
+import com.cronzph.salarytracker.ui.AppDialog;
 import com.cronzph.salarytracker.util.CutoffUtils;
 import com.cronzph.salarytracker.util.Money;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -353,11 +353,11 @@ public class PayoutActivity extends AppCompatActivity {
 
     private void confirmDelete() {
         if (existing == null) return;
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.payout_delete_title)
-                .setMessage(R.string.payout_delete_msg)
-                .setNegativeButton(R.string.action_cancel, null)
-                .setPositiveButton(R.string.action_delete, (dialog, which) -> {
+        new AppDialog.Builder(this)
+                .icon(R.drawable.ic_delete)
+                .title(R.string.payout_delete_title)
+                .message(R.string.payout_delete_msg)
+                .positive(R.string.action_delete, d -> {
                     db.deletePayout(periodKey);
                     if (proofPath != null) {
                         //noinspection ResultOfMethodCallIgnored
@@ -373,6 +373,8 @@ public class PayoutActivity extends AppCompatActivity {
                     setResult(RESULT_OK);
                     finish();
                 })
+                .negative(R.string.action_cancel, null)
+                .destructive(true)
                 .show();
     }
 }

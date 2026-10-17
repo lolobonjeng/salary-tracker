@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.cronzph.salarytracker.util.AutoBackup;
+
 import java.io.File;
 
 import java.util.ArrayList;
@@ -140,16 +142,22 @@ public class SalaryDbHelper extends SQLiteOpenHelper {
     public long save(SalaryEntry e) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues v = toValues(e);
+        long id;
         if (e.id > 0) {
             v.put(C_ID, e.id);
             db.insertWithOnConflict(T, null, v, SQLiteDatabase.CONFLICT_REPLACE);
-            return e.id;
+            id = e.id;
+        } else {
+            id = db.insertWithOnConflict(T, null, v, SQLiteDatabase.CONFLICT_REPLACE);
         }
-        return db.insertWithOnConflict(T, null, v, SQLiteDatabase.CONFLICT_REPLACE);
+        AutoBackup.schedule(appContext);
+        if (id > 0) Prefs.setHadData(appContext, true);
+        return id;
     }
 
     public void delete(long id) {
         getWritableDatabase().delete(T, C_ID + "=?", new String[]{String.valueOf(id)});
+        AutoBackup.schedule(appContext);
     }
 
     public void deleteAll() {
@@ -158,6 +166,7 @@ public class SalaryDbHelper extends SQLiteOpenHelper {
         db.delete(TB, null, null);
         db.delete(TP, null, null);
         deleteAllProofFiles();
+        AutoBackup.schedule(appContext);
     }
 
     private void deleteAllProofFiles() {
@@ -189,6 +198,7 @@ public class SalaryDbHelper extends SQLiteOpenHelper {
         v.put(B_PERIOD, periodKey);
         v.put(B_AMOUNT, amount);
         getWritableDatabase().insertWithOnConflict(TB, null, v, SQLiteDatabase.CONFLICT_REPLACE);
+        AutoBackup.schedule(appContext);
     }
 
     /** Lahat ng benefits, keyed by period key — para sa history at export. */
@@ -228,16 +238,21 @@ public class SalaryDbHelper extends SQLiteOpenHelper {
         v.put(P_AMOUNT, p.amount);
         v.put(P_PROOF, p.proofPath);
         SQLiteDatabase db = getWritableDatabase();
+        long id;
         if (p.id > 0) {
             v.put(C_ID, p.id);
             db.insertWithOnConflict(TP, null, v, SQLiteDatabase.CONFLICT_REPLACE);
-            return p.id;
+            id = p.id;
+        } else {
+            id = db.insertWithOnConflict(TP, null, v, SQLiteDatabase.CONFLICT_REPLACE);
         }
-        return db.insertWithOnConflict(TP, null, v, SQLiteDatabase.CONFLICT_REPLACE);
+        AutoBackup.schedule(appContext);
+        return id;
     }
 
     public void deletePayout(String periodKey) {
         getWritableDatabase().delete(TP, P_PERIOD + "=?", new String[]{periodKey});
+        AutoBackup.schedule(appContext);
     }
 
     private static Payout payoutFromCursor(Cursor c) {

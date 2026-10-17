@@ -1,5 +1,7 @@
 package com.cronzph.salarytracker;
 
+import android.Manifest;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -7,18 +9,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.cronzph.salarytracker.data.Prefs;
 import com.cronzph.salarytracker.data.SalaryDbHelper;
 import com.cronzph.salarytracker.data.SalaryEntry;
+import com.cronzph.salarytracker.ui.AppDialog;
+import com.cronzph.salarytracker.util.AutoBackup;
 import com.cronzph.salarytracker.util.Money;
 import com.cronzph.salarytracker.util.UpdaterUI;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButtonToggleGroup;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /** Pay settings, default entry template, at data management. */
 public class SettingsActivity extends AppCompatActivity {
@@ -38,6 +46,7 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView tvOtRate;
     private MaterialSwitch swAutoCheck;
     private TextView tvUpdateVersion;
+    private TextView tvBackupStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +71,14 @@ public class SettingsActivity extends AppCompatActivity {
         tvOtRate = findViewById(R.id.tvOtRate);
         swAutoCheck = findViewById(R.id.swAutoCheck);
         tvUpdateVersion = findViewById(R.id.tvUpdateVersion);
+        tvBackupStatus = findViewById(R.id.tvBackupStatus);
+
+        // API 28 pababa: kailangan ng storage permission para makasulat ang
+        // auto-backup sa Downloads. API 29+ ay MediaStore na.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && !AutoBackup.canWrite(this)) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 4410);
+        }
 
         TextWatcher watcher = new TextWatcher() {
             @Override
@@ -102,8 +119,25 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        updateBackupStatus();
         // Kung may naka-cache na APK (hal. hindi natuloy ang install), i-offer ulit.
         UpdaterUI.resume(this);
+    }
+
+    private void updateBackupStatus() {
+        String error = Prefs.getBackupError(this);
+        if (error != null && !error.isEmpty()) {
+            tvBackupStatus.setText(getString(R.string.backup_failed, error));
+            return;
+        }
+        long last = Prefs.getBackupLast(this);
+        if (last <= 0L) {
+            tvBackupStatus.setText(R.string.settings_backup_waiting);
+            return;
+        }
+        String when = new SimpleDateFormat("MMM d, HH:mm", Locale.getDefault())
+                .format(new Date(last));
+        tvBackupStatus.setText(getString(R.string.settings_backup_last, when));
     }
 
     @Override
@@ -194,14 +228,16 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void confirmClear() {
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.confirm_clear_title)
-                .setMessage(R.string.confirm_clear_msg)
-                .setNegativeButton(R.string.action_cancel, null)
-                .setPositiveButton(R.string.action_delete, (dialog, which) -> {
+        new AppDialog.Builder(this)
+                .icon(R.drawable.ic_delete)
+                .title(R.string.confirm_clear_title)
+                .message(R.string.confirm_clear_msg)
+                .positive(R.string.action_delete, d -> {
                     db.deleteAll();
                     Toast.makeText(this, R.string.cleared, Toast.LENGTH_SHORT).show();
                 })
+                .negative(R.string.action_cancel, null)
+                .destructive(true)
                 .show();
     }
 }

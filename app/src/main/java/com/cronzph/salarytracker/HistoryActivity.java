@@ -17,11 +17,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.cronzph.salarytracker.data.Prefs;
 import com.cronzph.salarytracker.data.SalaryDbHelper;
 import com.cronzph.salarytracker.data.SalaryEntry;
+import com.cronzph.salarytracker.ui.AppDialog;
 import com.cronzph.salarytracker.ui.EntryAdapter;
 import com.cronzph.salarytracker.util.BackupUtils;
 import com.cronzph.salarytracker.util.ExportUtils;
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.Closeable;
 import java.io.File;
@@ -119,9 +119,10 @@ public class HistoryActivity extends AppCompatActivity implements EntryAdapter.O
                 getString(R.string.backup_restore)
         };
 
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.export_share)
-                .setItems(options, (dialog, which) -> {
+        new AppDialog.Builder(this)
+                .icon(R.drawable.ic_share)
+                .title(R.string.export_share)
+                .items(options, (dialog, which) -> {
                     // Ang restore ay dapat gumana kahit walang laman ang app —
                     // iyon nga ang punto ng backup.
                     if (which == 0 || which == 1) {
@@ -153,6 +154,7 @@ public class HistoryActivity extends AppCompatActivity implements EntryAdapter.O
                         openBackup.launch(new String[]{BackupUtils.XLSX_MIME, "*/*"});
                     }
                 })
+                .negative(R.string.action_cancel, null)
                 .show();
     }
 
@@ -257,16 +259,17 @@ public class HistoryActivity extends AppCompatActivity implements EntryAdapter.O
             msg.append("\n\n").append(getString(R.string.restore_skipped, parsed.rowsSkipped));
         }
 
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.restore_title)
-                .setMessage(msg)
-                .setNegativeButton(R.string.action_cancel, null)
-                .setPositiveButton(R.string.restore_confirm, (d, w) -> {
+        new AppDialog.Builder(this)
+                .icon(R.drawable.ic_history)
+                .title(R.string.restore_title)
+                .message(msg)
+                .positive(R.string.restore_confirm, d -> {
                     BackupUtils.Result r = BackupUtils.apply(parsed, db);
                     Toast.makeText(this, getString(R.string.restore_done,
                             r.entriesImported, r.benefitsImported), Toast.LENGTH_LONG).show();
                     load();
                 })
+                .negative(R.string.action_cancel, null)
                 .show();
     }
 

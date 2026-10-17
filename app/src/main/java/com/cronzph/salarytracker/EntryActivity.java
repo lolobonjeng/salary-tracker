@@ -13,12 +13,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.cronzph.salarytracker.data.Prefs;
 import com.cronzph.salarytracker.data.SalaryDbHelper;
 import com.cronzph.salarytracker.data.SalaryEntry;
+import com.cronzph.salarytracker.ui.AppDialog;
 import com.cronzph.salarytracker.util.CutoffUtils;
 import com.cronzph.salarytracker.util.Money;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -305,17 +305,19 @@ public class EntryActivity extends AppCompatActivity {
 
     private void confirmDelete() {
         if (editing == null || editing.id <= 0) return;
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.confirm_delete_title)
-                .setMessage(getString(R.string.confirm_delete_msg,
+        new AppDialog.Builder(this)
+                .icon(R.drawable.ic_delete)
+                .title(R.string.confirm_delete_title)
+                .message(getString(R.string.confirm_delete_msg,
                         CutoffUtils.prettyDate(editing.workDate)))
-                .setNegativeButton(R.string.action_cancel, null)
-                .setPositiveButton(R.string.action_delete, (dialog, which) -> {
+                .positive(R.string.action_delete, d -> {
                     db.delete(editing.id);
                     Toast.makeText(this, R.string.deleted, Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK);
                     finish();
                 })
+                .negative(R.string.action_cancel, null)
+                .destructive(true)
                 .show();
     }
 }

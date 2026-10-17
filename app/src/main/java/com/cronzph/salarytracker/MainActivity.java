@@ -14,14 +14,16 @@ import com.cronzph.salarytracker.data.Payout;
 import com.cronzph.salarytracker.data.Prefs;
 import com.cronzph.salarytracker.data.SalaryDbHelper;
 import com.cronzph.salarytracker.data.SalaryEntry;
+import com.cronzph.salarytracker.ui.AppDialog;
 import com.cronzph.salarytracker.ui.BarChartView;
 import com.cronzph.salarytracker.ui.EntryRowBinder;
+import com.cronzph.salarytracker.util.AutoBackup;
+import com.cronzph.salarytracker.util.BackupUtils;
 import com.cronzph.salarytracker.util.CutoffUtils;
 import com.cronzph.salarytracker.util.Money;
 import com.cronzph.salarytracker.util.Updater;
 import com.cronzph.salarytracker.util.UpdaterUI;
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -121,6 +123,58 @@ public class MainActivity extends AppCompatActivity {
 
         // Kusang check ng update — may 24-oras na throttle at sinusunod ang setting.
         UpdaterUI.autoCheck(this);
+
+        promptRestoreIfNeeded();
+    }
+
+    /**
+     * Fresh install at may nahanap na auto-backup sa Downloads → i-alok ang
+     * restore. Isang beses lang: pagkatapos ng "clear all" ay hindi na ito
+     * mag-aalok, dahil {@code had_data} ay totoo na.
+     */
+    private void promptRestoreIfNeeded() {
+        if (Prefs.isHadData(this)) return;
+        if (!db.all().isEmpty()) {
+            Prefs.setHadData(this, true);
+            return;
+        }
+        final AutoBackup.Latest latest = AutoBackup.findLatest(this);
+        if (latest == null) return;
+
+        Prefs.setHadData(this, true);
+
+        new AppDialog.Builder(this)
+                .icon(R.drawable.ic_history)
+                .title(R.string.restore_found_title)
+                .message(getString(R.string.restore_found_msg, latest.name))
+                .positive(R.string.restore_confirm, d -> restoreLatest(latest))
+                .negative(R.string.action_cancel, null)
+                .show();
+    }
+
+    private void restoreLatest(final AutoBackup.Latest latest) {
+        Toast.makeText(this, R.string.restore_working, Toast.LENGTH_SHORT).show();
+        new Thread(() -> {
+            try {
+                BackupUtils.Parsed parsed = AutoBackup.parse(this, latest.uri);
+                final BackupUtils.Result result = BackupUtils.apply(parsed, db);
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) return;
+                    Toast.makeText(this, getString(R.string.restore_done,
+                            result.entriesImported, result.benefitsImported),
+                            Toast.LENGTH_LONG).show();
+                    refresh();
+                });
+            } catch (final Exception e) {
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) return;
+                    String m = e.getMessage();
+                    if (m == null || m.isEmpty()) m = e.getClass().getSimpleName();
+                    Toast.makeText(this, getString(R.string.restore_failed, m),
+                            Toast.LENGTH_LONG).show();
+                });
+            }
+        }).start();
     }
 
     @Override
@@ -130,6 +184,13 @@ public class MainActivity extends AppCompatActivity {
         // Kung bumukas naman ang app, wala nang silbi ang "i-tap para buksan" na abiso.
         Updater.clearRelaunchNotification(this);
         UpdaterUI.resume(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Kung may naka-pending pang auto-backup, isulat agad bago umalis.
+        AutoBackup.flush(this);
     }
 
     @Override
@@ -232,19 +293,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
         final String key = period.key();
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.benefits_dialog_title)
-                .setView(content)
-                .setNegativeButton(R.string.action_cancel, null)
-                .setNeutralButton(R.string.benefits_clear, (dialog, which) -> {
-                    db.setBenefits(key, 0d);
-                    refresh();
-                })
-                .setPositiveButton(R.string.action_save, (dialog, which) -> {
+        new AppDialog.Builder(this)
+                .icon(R.drawable.ic_edit)
+                .title(R.string.benefits_dialog_title)
+                .content(content)
+                .positive(R.string.action_save, d -> {
                     db.setBenefits(key, Money.parse(et.getText()));
                     Toast.makeText(this, R.string.benefits_saved, Toast.LENGTH_SHORT).show();
                     refresh();
                 })
+                .neutral(R.string.benefits_clear, d -> {
+                    db.setBenefits(key, 0d);
+                    refresh();
+                })
+                .negative(R.string.action_cancel, null)
                 .show();
     }
 

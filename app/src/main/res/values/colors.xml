@@ -41,4 +41,8 @@
     <color name="chartTrack">#E3EAE1</color>
     <color name="positive">#006D3B</color>
     <color name="neutral">#72796F</color>
+
+    <!-- Custom dialog surfaces (a bit lighter than the page background) -->
+    <color name="dialogSurface">#FFFFFF</color>
+    <color name="dialogOutline">#DCE4DB</color>
 </resources>

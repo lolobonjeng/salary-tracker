@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android Auto Backup (API 23-30). Kasama ang ledger at settings. -->
+<full-backup-content>
+    <include
+        domain="database"
+        path="salary_tracker.db" />
+    <include
+        domain="sharedpref"
+        path="salary_prefs.xml" />
+    <include
+        domain="file"
+        path="proofs/" />
+</full-backup-content>

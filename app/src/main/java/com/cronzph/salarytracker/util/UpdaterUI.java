@@ -9,12 +9,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 
 import com.cronzph.salarytracker.R;
 import com.cronzph.salarytracker.data.Prefs;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.cronzph.salarytracker.ui.AppDialog;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import java.io.File;
@@ -38,7 +37,7 @@ public final class UpdaterUI {
     /** Para hindi paulit-ulit i-offer ang parehong APK. */
     private static String offeredPath;
 
-    private static AlertDialog progressDialog;
+    private static AppDialog progressDialog;
     private static TextView progressText;
     private static LinearProgressIndicator progressBar;
 
@@ -91,10 +90,11 @@ public final class UpdaterUI {
             // Tahimik lang kapag kusang check — huwag guluhin ang user sa
             // "walang internet" tuwing bubuksan ang app.
             if (!show || !alive(a)) return;
-            new MaterialAlertDialogBuilder(a)
-                    .setTitle(R.string.update_check)
-                    .setMessage(message)
-                    .setPositiveButton(R.string.action_ok, null)
+            new AppDialog.Builder(a)
+                    .icon(R.drawable.ic_update)
+                    .title(R.string.update_check)
+                    .message(message)
+                    .positive(R.string.action_ok, null)
                     .show();
         }
     };
@@ -151,21 +151,23 @@ public final class UpdaterUI {
         offeredPath = path;
 
         if (!Updater.canInstall(a)) {
-            new MaterialAlertDialogBuilder(a)
-                    .setTitle(R.string.update_ready_title)
-                    .setMessage(R.string.update_need_unknown_sources)
-                    .setNegativeButton(R.string.action_cancel, null)
-                    .setPositiveButton(R.string.action_ok,
-                            (d, w) -> Updater.openInstallPermissionSettings(a))
+            new AppDialog.Builder(a)
+                    .icon(R.drawable.ic_update)
+                    .title(R.string.update_ready_title)
+                    .message(R.string.update_need_unknown_sources)
+                    .positive(R.string.action_ok,
+                            d -> Updater.openInstallPermissionSettings(a))
+                    .negative(R.string.action_cancel, null)
                     .show();
             return;
         }
 
-        new MaterialAlertDialogBuilder(a)
-                .setTitle(R.string.update_ready_title)
-                .setMessage(R.string.update_install_ready)
-                .setNegativeButton(R.string.action_cancel, null)
-                .setPositiveButton(R.string.update_install, (d, w) -> proceedToInstall(a, apk))
+        new AppDialog.Builder(a)
+                .icon(R.drawable.ic_update)
+                .title(R.string.update_ready_title)
+                .message(R.string.update_install_ready)
+                .positive(R.string.update_install, d -> proceedToInstall(a, apk))
+                .negative(R.string.action_cancel, null)
                 .show();
     }
 
@@ -174,37 +176,31 @@ public final class UpdaterUI {
     private static void showUpdateAvailable(final Activity a, final Updater.Release r) {
         if (!alive(a)) return;
 
-        View content = LayoutInflater.from(a).inflate(R.layout.dialog_update, null);
-        TextView tvVersion = content.findViewById(R.id.txtUpdVersion);
-        TextView tvSize = content.findViewById(R.id.txtUpdSize);
-        TextView tvLog = content.findViewById(R.id.txtUpdChangelog);
-        TextView tvHeader = content.findViewById(R.id.txtUpdWhatsNew);
-
-        tvVersion.setText(r.tag);
-        tvSize.setText(a.getString(R.string.update_size, Updater.formatSize(r.apkSize)));
-
+        // Version at size ay nasa title/message na ng dialog — dito na lang
+        // ang changelog, para walang doble at walang mahabang blangko.
+        View content = null;
         String body = r.body == null ? "" : r.body.trim();
-        if (body.isEmpty()) {
-            tvLog.setVisibility(View.GONE);
-            tvHeader.setVisibility(View.GONE);
-        } else {
-            tvLog.setText(body);
+        if (!body.isEmpty()) {
+            content = LayoutInflater.from(a).inflate(R.layout.dialog_update, null);
+            ((TextView) content.findViewById(R.id.txtUpdChangelog)).setText(body);
         }
 
         dialogShowing = true;
-        new MaterialAlertDialogBuilder(a)
-                .setTitle(a.getString(R.string.update_available_title, r.tag))
-                .setView(content)
-                .setNegativeButton(R.string.update_later, (d, w) -> dialogShowing = false)
-                .setNeutralButton(R.string.update_skip, (d, w) -> {
-                    dialogShowing = false;
-                    Prefs.setSkippedVersion(a, r.tag);
-                })
-                .setPositiveButton(R.string.update_download, (d, w) -> {
+        new AppDialog.Builder(a)
+                .icon(R.drawable.ic_update)
+                .title(a.getString(R.string.update_available_title, r.tag))
+                .message(a.getString(R.string.update_size, Updater.formatSize(r.apkSize)))
+                .content(content)
+                .positive(R.string.update_download, d -> {
                     dialogShowing = false;
                     startDownload(a, r);
                 })
-                .setOnCancelListener(d -> dialogShowing = false)
+                .neutral(R.string.update_skip, d -> {
+                    dialogShowing = false;
+                    Prefs.setSkippedVersion(a, r.tag);
+                })
+                .negative(R.string.update_later, d -> dialogShowing = false)
+                .onCancel(d -> dialogShowing = false)
                 .show();
     }
 
@@ -222,12 +218,12 @@ public final class UpdaterUI {
         progressText.setText(a.getString(R.string.update_downloading, 0));
 
         dialogShowing = true;
-        progressDialog = new MaterialAlertDialogBuilder(a)
-                .setTitle(R.string.update_download_title)
-                .setView(content)
-                .setCancelable(false)
-                .create();
-        progressDialog.show();
+        progressDialog = new AppDialog.Builder(a)
+                .icon(R.drawable.ic_update)
+                .title(R.string.update_download_title)
+                .content(content)
+                .cancelable(false)
+                .show();
 
         Updater.download(a, r);
     }
@@ -249,11 +245,12 @@ public final class UpdaterUI {
         if (!Updater.signaturesMatch(a, apk)) {
             // Hindi ito magtatagumpay — tatanggi ang installer dahil iba ang key.
             // Hindi natin ito itutuloy: ipaliwanag na lang at i-clear ang APK.
-            new MaterialAlertDialogBuilder(a)
-                    .setTitle(R.string.update_sig_title)
-                    .setMessage(R.string.update_sig_msg)
-                    .setPositiveButton(R.string.action_ok, (d, w) -> Updater.purgeCache(a))
-                    .setOnCancelListener(d -> Updater.purgeCache(a))
+            new AppDialog.Builder(a)
+                    .icon(R.drawable.ic_update)
+                    .title(R.string.update_sig_title)
+                    .message(R.string.update_sig_msg)
+                    .positive(R.string.action_ok, d -> Updater.purgeCache(a))
+                    .onCancel(d -> Updater.purgeCache(a))
                     .show();
             return;
         }

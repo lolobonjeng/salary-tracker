@@ -16,6 +16,11 @@ public final class Prefs {
     private static final String KEY_UPD_LAST = "update_last_check";
     private static final String KEY_UPD_SKIP = "update_skipped_version";
 
+    private static final String KEY_BK_LAST = "backup_last";
+    private static final String KEY_BK_NOTIFIED = "backup_notified";
+    private static final String KEY_BK_ERROR = "backup_error";
+    private static final String KEY_HAD_DATA = "had_data";
+
     /** Default mula sa record: 600/day. */
     public static final double DEFAULT_RATE = 600d;
     /** Regular OT = 125% ng hourly rate. */
@@ -111,5 +116,47 @@ public final class Prefs {
 
     public static void setSkippedVersion(Context c, String tag) {
         sp(c).edit().putString(KEY_UPD_SKIP, tag == null ? DEFAULT_UPD_SKIP : tag).apply();
+    }
+
+    // ---------------------------------------------------------- auto backup
+
+    /** Millis ng huling matagumpay na auto-backup (0 = wala pa). */
+    public static long getBackupLast(Context c) {
+        return sp(c).getLong(KEY_BK_LAST, 0L);
+    }
+
+    public static void setBackupLast(Context c, long millis) {
+        sp(c).edit().putLong(KEY_BK_LAST, millis).remove(KEY_BK_ERROR).apply();
+    }
+
+    /** Isang beses lang ipakita ang "na-backup na" na abiso. */
+    public static boolean isBackupNotified(Context c) {
+        return sp(c).getBoolean(KEY_BK_NOTIFIED, false);
+    }
+
+    public static void setBackupNotified(Context c, boolean v) {
+        sp(c).edit().putBoolean(KEY_BK_NOTIFIED, v).apply();
+    }
+
+    /** Huling error ng backup ("" = wala). */
+    public static String getBackupError(Context c) {
+        return sp(c).getString(KEY_BK_ERROR, "");
+    }
+
+    public static void setBackupError(Context c, String error) {
+        sp(c).edit().putString(KEY_BK_ERROR, error == null ? "" : error).apply();
+    }
+
+    /**
+     * Nagkaroon na ba ng data ang install na ito? Ginagamit para hindi
+     * mag-alok ng restore pagkatapos ng "clear all" — pero mag-alok pagkatapos
+     * ng fresh install (wala pang data kahit kailan).
+     */
+    public static boolean isHadData(Context c) {
+        return sp(c).getBoolean(KEY_HAD_DATA, false);
+    }
+
+    public static void setHadData(Context c, boolean v) {
+        sp(c).edit().putBoolean(KEY_HAD_DATA, v).apply();
     }
 }
