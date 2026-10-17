@@ -28,6 +28,11 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
+            android:name=".PayoutActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".HistoryActivity"
             android:exported="false" />
 

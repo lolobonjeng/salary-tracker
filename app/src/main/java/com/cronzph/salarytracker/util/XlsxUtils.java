@@ -66,7 +66,7 @@ public final class XlsxUtils {
 
     public static void write(OutputStream out, List<Sheet> sheets) throws IOException {
         if (sheets == null || sheets.isEmpty()) {
-            throw new IOException("walang sheet");
+            throw new IOException("No sheet to write");
         }
 
         ZipOutputStream zos = new ZipOutputStream(out);

@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.cronzph.salarytracker.data.Payout;
 import com.cronzph.salarytracker.data.Prefs;
 import com.cronzph.salarytracker.data.SalaryDbHelper;
 import com.cronzph.salarytracker.data.SalaryEntry;
@@ -53,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView txtBenefits;
     private TextView txtBenefitsHint;
     private TextView txtEmpty;
+    private TextView txtPayoutStatus;
+    private TextView txtPayoutHint;
+    private android.widget.ImageButton btnNext;
     private LinearLayout recentContainer;
     private BarChartView chart;
 
@@ -75,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
         txtBenefits = findViewById(R.id.txtBenefits);
         txtBenefitsHint = findViewById(R.id.txtBenefitsHint);
         txtEmpty = findViewById(R.id.txtEmpty);
+        txtPayoutStatus = findViewById(R.id.txtPayoutStatus);
+        txtPayoutHint = findViewById(R.id.txtPayoutHint);
+        btnNext = findViewById(R.id.btnNext);
         recentContainer = findViewById(R.id.recentContainer);
         chart = findViewById(R.id.chart);
 
@@ -107,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btnViewAll).setOnClickListener(v ->
                 startActivity(new Intent(this, HistoryActivity.class)));
         findViewById(R.id.rowBenefits).setOnClickListener(v -> editBenefits());
+        findViewById(R.id.cardPayout).setOnClickListener(v -> openPayout());
 
         ExtendedFloatingActionButton fab = findViewById(R.id.fabAdd);
         fab.setOnClickListener(v -> startActivity(new Intent(this, EntryActivity.class)));
@@ -171,8 +179,42 @@ public class MainActivity extends AppCompatActivity {
         }
         txtNetSub.setText(sub.toString());
 
+        updatePayout();
+
+        // Entries cannot be set in advance, so future cutoffs stay closed.
+        boolean atCurrent = period.equals(CutoffUtils.current());
+        btnNext.setEnabled(!atCurrent);
+        btnNext.setAlpha(atCurrent ? 0.3f : 1f);
+
         buildChart(entries, hoursPerDay);
         buildRecent(entries, hoursPerDay);
+    }
+
+    /** Payout status for the cutoff currently on screen. */
+    private void updatePayout() {
+        Payout payout = db.getPayout(period.key());
+        if (payout != null) {
+            txtPayoutStatus.setText(getString(R.string.payout_sent_on,
+                    CutoffUtils.prettyDate(payout.paidDate)));
+            txtPayoutHint.setText(getString(R.string.payout_proof_attached)
+                    + " \u00B7 " + Money.peso(payout.amount));
+        } else {
+            txtPayoutStatus.setText(R.string.payout_not_sent);
+            txtPayoutHint.setText(R.string.payout_not_sent_hint);
+        }
+    }
+
+    private void openPayout() {
+        double hoursPerDay = Prefs.getHoursPerDay(this);
+        List<SalaryEntry> entries = db.between(period.startIso, period.endIso);
+        double net = SalaryDbHelper.totals(entries, hoursPerDay).grandTotal()
+                - db.getBenefits(period.key());
+
+        Intent intent = new Intent(this, PayoutActivity.class);
+        intent.putExtra(PayoutActivity.EXTRA_KEY, period.key());
+        intent.putExtra(PayoutActivity.EXTRA_LABEL, period.label);
+        intent.putExtra(PayoutActivity.EXTRA_AMOUNT, Math.max(net, 0d));
+        startActivity(intent);
     }
 
     /** Dialog para ilagay ang bawas ng cutoff na ito. */

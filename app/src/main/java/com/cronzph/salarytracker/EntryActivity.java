@@ -33,9 +33,6 @@ public class EntryActivity extends AppCompatActivity {
 
     public static final String EXTRA_ID = "entry_id";
 
-    /** Ilang araw ang hahanapin para sa susunod na walang entry. */
-    private static final int NEXT_DATE_SCAN = 60;
-
     private SalaryDbHelper db;
 
     private SalaryEntry editing;
@@ -90,9 +87,9 @@ public class EntryActivity extends AppCompatActivity {
             }
         }
         if (selectedDate == null) {
-            // Bagong entry: simulan sa pinakaunang araw na wala pang entry,
-            // para tuloy-tuloy lang ang Save nang hindi na nag-e-enter ng petsa.
-            selectedDate = nextOpenDate();
+            // New entries always start on today. Future dates are not allowed,
+            // so there is nothing to pre-fill beyond the current day.
+            selectedDate = CutoffUtils.todayIso();
             SalaryEntry existing = db.byDate(selectedDate);
             if (existing != null) {
                 editing = existing;
@@ -136,20 +133,6 @@ public class EntryActivity extends AppCompatActivity {
     }
 
     // ------------------------------------------------------------------ setup
-
-    /** Pinakaunang araw simula ngayon na wala pang entry. */
-    private String nextOpenDate() {
-        String today = CutoffUtils.todayIso();
-        if (db.byDate(today) == null) return today;
-
-        Calendar c = Calendar.getInstance();
-        for (int i = 0; i < NEXT_DATE_SCAN; i++) {
-            c.add(Calendar.DAY_OF_MONTH, 1);
-            String iso = CutoffUtils.iso(c);
-            if (db.byDate(iso) == null) return iso;
-        }
-        return today;
-    }
 
     private void populate() {
         boolean isEdit = editing != null && editing.id > 0;
@@ -271,6 +254,9 @@ public class EntryActivity extends AppCompatActivity {
             updateDateLabel();
             recompute();
         }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+
+        // No advance entries: the picker stops at today.
+        dlg.getDatePicker().setMaxDate(System.currentTimeMillis());
         dlg.show();
     }
 
@@ -286,6 +272,11 @@ public class EntryActivity extends AppCompatActivity {
 
         tilBase.setError(null);
         tilOtAmount.setError(null);
+
+        if (selectedDate == null || selectedDate.compareTo(CutoffUtils.todayIso()) > 0) {
+            Toast.makeText(this, R.string.date_future, Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         if (work && base <= 0) {
             tilBase.setError(getString(R.string.invalid_amount));

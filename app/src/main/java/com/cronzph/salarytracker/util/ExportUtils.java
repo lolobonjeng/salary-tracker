@@ -32,7 +32,7 @@ public final class ExportUtils {
                                       Map<String, Double> benefits) {
         StringBuilder sb = new StringBuilder("SALARY SUMMARY\n");
         if (entriesDesc.isEmpty()) {
-            sb.append("\n(walang laman)\n");
+            sb.append("\n(no entries)\n");
             return sb.toString();
         }
 
@@ -73,7 +73,7 @@ public final class ExportUtils {
                 .append("  (").append(Money.shortPlain(t.otHoursTotal)).append(" hrs)\n");
         sb.append("Gross       : ").append(Money.plain(gross)).append('\n');
         if (deduct > 0d) {
-            sb.append("Benefits    : -").append(Money.plain(deduct)).append('\n');
+            sb.append("Deductions  : -").append(Money.plain(deduct)).append('\n');
         }
         sb.append("NET PAY     : ").append(Money.plain(gross - deduct)).append('\n');
         if (t.daysOff > 0) {
@@ -158,7 +158,7 @@ public final class ExportUtils {
         if (base == null) base = c.getFilesDir();
         File dir = new File(base, "exports");
         if (!dir.exists() && !dir.mkdirs()) {
-            throw new IOException("Hindi ma-create ang " + dir.getAbsolutePath());
+            throw new IOException("Cannot create " + dir.getAbsolutePath());
         }
         String stamp = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US).format(new Date());
         File out = new File(dir, "salary-" + stamp + ".csv");

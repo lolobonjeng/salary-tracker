@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.io.File;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,8 +20,8 @@ import java.util.Map;
 public class SalaryDbHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "salary_tracker.db";
-    /** v1 = entries lang. v2 = dinagdag ang cutoff-level benefits. */
-    private static final int DB_VERSION = 2;
+    /** v1 = entries only. v2 = cutoff-level deductions. v3 = payout records. */
+    private static final int DB_VERSION = 3;
 
     public static final String T = "entries";
     public static final String C_ID = "_id";
@@ -35,6 +37,13 @@ public class SalaryDbHelper extends SQLiteOpenHelper {
     public static final String TB = "cutoff_benefits";
     public static final String B_PERIOD = "period_key";
     public static final String B_AMOUNT = "amount";
+
+    /** Salary payout per cutoff: date sent + proof image. */
+    public static final String TP = "payouts";
+    public static final String P_PERIOD = "period_key";
+    public static final String P_DATE = "paid_date";
+    public static final String P_AMOUNT = "amount";
+    public static final String P_PROOF = "proof_path";
 
     private static final String CREATE_ENTRIES = "CREATE TABLE " + T + " ("
             + C_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -55,6 +64,13 @@ public class SalaryDbHelper extends SQLiteOpenHelper {
             + B_PERIOD + " TEXT NOT NULL UNIQUE, "
             + B_AMOUNT + " REAL NOT NULL DEFAULT 0)";
 
+    private static final String CREATE_PAYOUTS = "CREATE TABLE " + TP + " ("
+            + C_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + P_PERIOD + " TEXT NOT NULL UNIQUE, "
+            + P_DATE + " TEXT NOT NULL, "
+            + P_AMOUNT + " REAL NOT NULL DEFAULT 0, "
+            + P_PROOF + " TEXT NOT NULL)";
+
     private static SalaryDbHelper instance;
 
     public static synchronized SalaryDbHelper get(Context c) {
@@ -64,8 +80,11 @@ public class SalaryDbHelper extends SQLiteOpenHelper {
         return instance;
     }
 
+    private final Context appContext;
+
     private SalaryDbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
+        this.appContext = context.getApplicationContext();
     }
 
     @Override
@@ -73,6 +92,7 @@ public class SalaryDbHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_ENTRIES);
         db.execSQL(CREATE_ENTRIES_INDEX);
         db.execSQL(CREATE_BENEFITS);
+        db.execSQL(CREATE_PAYOUTS);
     }
 
     @Override
@@ -80,6 +100,9 @@ public class SalaryDbHelper extends SQLiteOpenHelper {
         // NON-DESTRUCTIVE: huwag buburahin ang entries ng user.
         if (oldVersion < 2) {
             db.execSQL(CREATE_BENEFITS);
+        }
+        if (oldVersion < 3) {
+            db.execSQL(CREATE_PAYOUTS);
         }
     }
 
@@ -133,6 +156,18 @@ public class SalaryDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         db.delete(T, null, null);
         db.delete(TB, null, null);
+        db.delete(TP, null, null);
+        deleteAllProofFiles();
+    }
+
+    private void deleteAllProofFiles() {
+        File dir = new File(appContext.getFilesDir(), "proofs");
+        File[] files = dir.listFiles();
+        if (files == null) return;
+        for (File f : files) {
+            //noinspection ResultOfMethodCallIgnored
+            f.delete();
+        }
     }
 
     // ----------------------------------------------------------- benefits
@@ -170,6 +205,49 @@ public class SalaryDbHelper extends SQLiteOpenHelper {
             if (c != null) c.close();
         }
         return out;
+    }
+
+    // ------------------------------------------------------------- payouts
+
+    /** Payout record for one cutoff, or null if the salary is not marked as sent. */
+    public Payout getPayout(String periodKey) {
+        Cursor c = null;
+        try {
+            c = getReadableDatabase().query(TP, null,
+                    P_PERIOD + "=?", new String[]{periodKey}, null, null, null);
+            return c.moveToFirst() ? payoutFromCursor(c) : null;
+        } finally {
+            if (c != null) c.close();
+        }
+    }
+
+    public long savePayout(Payout p) {
+        ContentValues v = new ContentValues();
+        v.put(P_PERIOD, p.periodKey);
+        v.put(P_DATE, p.paidDate);
+        v.put(P_AMOUNT, p.amount);
+        v.put(P_PROOF, p.proofPath);
+        SQLiteDatabase db = getWritableDatabase();
+        if (p.id > 0) {
+            v.put(C_ID, p.id);
+            db.insertWithOnConflict(TP, null, v, SQLiteDatabase.CONFLICT_REPLACE);
+            return p.id;
+        }
+        return db.insertWithOnConflict(TP, null, v, SQLiteDatabase.CONFLICT_REPLACE);
+    }
+
+    public void deletePayout(String periodKey) {
+        getWritableDatabase().delete(TP, P_PERIOD + "=?", new String[]{periodKey});
+    }
+
+    private static Payout payoutFromCursor(Cursor c) {
+        Payout p = new Payout();
+        p.id = c.getLong(c.getColumnIndexOrThrow(C_ID));
+        p.periodKey = c.getString(c.getColumnIndexOrThrow(P_PERIOD));
+        p.paidDate = c.getString(c.getColumnIndexOrThrow(P_DATE));
+        p.amount = c.getDouble(c.getColumnIndexOrThrow(P_AMOUNT));
+        p.proofPath = c.getString(c.getColumnIndexOrThrow(P_PROOF));
+        return p;
     }
 
     /** Lahat ng entries, sunod-sunod ayon sa petsa (pinakaluma muna). */

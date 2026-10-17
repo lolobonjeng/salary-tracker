@@ -133,7 +133,7 @@ public final class BackupUtils {
     public static Parsed parse(InputStream in) throws IOException {
         List<XlsxUtils.Sheet> sheets = XlsxUtils.read(in);
         if (sheets.isEmpty()) {
-            throw new IOException("walang worksheet sa file");
+            throw new IOException("No worksheet found in the file");
         }
 
         Parsed parsed = new Parsed();
@@ -150,7 +150,7 @@ public final class BackupUtils {
         }
 
         if (!foundEntries) {
-            throw new IOException("hindi ito Salary Tracker backup");
+            throw new IOException("This is not a Salary Tracker backup");
         }
         return parsed;
     }

@@ -180,7 +180,7 @@ public class HistoryActivity extends AppCompatActivity implements EntryAdapter.O
             OutputStream out = null;
             try {
                 out = getContentResolver().openOutputStream(uri);
-                if (out == null) throw new IOException("hindi ma-buksan ang file");
+                if (out == null) throw new IOException("Cannot open the file");
                 BackupUtils.write(out, ascending, hoursPerDay, benefits);
                 final String name = displayName(uri);
                 runOnUiThread(() -> {
@@ -228,7 +228,7 @@ public class HistoryActivity extends AppCompatActivity implements EntryAdapter.O
             InputStream in = null;
             try {
                 in = getContentResolver().openInputStream(uri);
-                if (in == null) throw new IOException("hindi ma-buksan ang file");
+                if (in == null) throw new IOException("Cannot open the file");
                 final BackupUtils.Parsed parsed = BackupUtils.parse(in);
                 runOnUiThread(() -> confirmRestore(parsed));
             } catch (final Exception e) {
