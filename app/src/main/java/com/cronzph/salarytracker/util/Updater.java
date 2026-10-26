@@ -54,7 +54,7 @@ public final class Updater {
 
     /** Public repo — ang "latest release" ang pinagkukunan ng update info. */
     private static final String REPO_API =
-            "https://api.github.com/repos/cronzph999-cloud/salary-tracker/releases/latest";
+            "https://api.github.com/repos/lolobonjeng/salary-tracker/releases/latest";
 
     /** Isang check kada 24 oras para hindi ma-hit ang 60/hr na GitHub rate limit. */
     private static final long AUTO_CHECK_INTERVAL_MS = 24L * 60 * 60 * 1000L;
