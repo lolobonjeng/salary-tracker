@@ -55,6 +55,8 @@ public final class AppDialog extends Dialog {
         private CharSequence title;
         private CharSequence message;
         private int iconRes;
+        private int sweetType = -1;   // SweetAlert2-style icon type (-1 = none)
+        private long sweetTimerMs = 0; // auto-dismiss after ms (0 = none)
         private View content;
         private CharSequence[] items;
         private ItemListener itemListener;
@@ -94,6 +96,26 @@ public final class AppDialog extends Dialog {
 
         public Builder icon(@DrawableRes int res) {
             this.iconRes = res;
+            return this;
+        }
+
+        /**
+         * SweetAlert2-style icon: bilog na may kulay at animadong glyph
+         * (SUCCESS / ERROR / WARNING / INFO). Pumapalit sa {@link #icon(int)}
+         * kapag ginamit — hindi pwedeng sabay.
+         */
+        public Builder sweet(@SweetIconView.Type int type) {
+            this.sweetType = type;
+            return this;
+        }
+
+
+        /**
+         * Awtomatikong magsasara ang dialog pagkatapos ng {@code ms}
+         * millisegundos — gaya ng SweetAlert2 na {@code timer} option.
+         */
+        public Builder sweetTimer(long ms) {
+            this.sweetTimerMs = ms;
             return this;
         }
 
@@ -174,7 +196,24 @@ public final class AppDialog extends Dialog {
             MaterialButton btnNegative = root.findViewById(R.id.btnNegative);
 
             // --- icon
-            if (iconRes != 0) {
+            if (sweetType >= 0) {
+                // SweetAlert2-style: palitan ang laman ng iconWrap ng
+                // custom SweetIconView at andarin ang pop-in animation.
+                iconWrap.setVisibility(View.VISIBLE);
+                imgIcon.setVisibility(View.GONE);
+                int parentSize = (int) (92f * ctx.getResources().getDisplayMetrics().density + 0.5f);
+                FrameLayout.LayoutParams iconLp = new FrameLayout.LayoutParams(
+                        parentSize, parentSize);
+                iconLp.gravity = android.view.Gravity.CENTER;
+                SweetIconView sweet = new SweetIconView(ctx);
+                sweet.setLayoutParams(iconLp);
+                sweet.setType(sweetType);
+                // Palitan din ang background ng iconWrap pabalik sa transparent —
+                // ang SweetIconView na ang bubuo ng bilog.
+                iconWrap.setBackground(null);
+                iconWrap.addView(sweet);
+                sweet.post(sweet::animateIn);
+            } else if (iconRes != 0) {
                 iconWrap.setVisibility(View.VISIBLE);
                 imgIcon.setImageResource(iconRes);
             } else {
@@ -256,6 +295,10 @@ public final class AppDialog extends Dialog {
             dialog.setCanceledOnTouchOutside(cancelable);
             if (onCancel != null) {
                 dialog.setOnCancelListener(onCancel);
+            }
+            if (sweetTimerMs > 0) {
+                new android.os.Handler(android.os.Looper.getMainLooper())
+                        .postDelayed(dialog::dismiss, sweetTimerMs);
             }
             dialog.show();
 

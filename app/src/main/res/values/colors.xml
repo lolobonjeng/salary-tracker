@@ -45,4 +45,10 @@
     <!-- Custom dialog surfaces (a bit lighter than the page background) -->
     <color name="dialogSurface">#FFFFFF</color>
     <color name="dialogOutline">#DCE4DB</color>
+    <!-- SweetAlert2-style icon state colors -->
+    <color name="sweet_success">#1FAF5A</color>
+    <color name="sweet_error">#E5484D</color>
+    <color name="sweet_warning">#F0A93B</color>
+    <color name="sweet_info">#3A8BD8</color>
+    <color name="sweet_circle_on">#FFFFFF</color>
 </resources>

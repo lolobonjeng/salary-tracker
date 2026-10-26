@@ -14,6 +14,7 @@ import com.cronzph.salarytracker.data.Prefs;
 import com.cronzph.salarytracker.data.SalaryDbHelper;
 import com.cronzph.salarytracker.data.SalaryEntry;
 import com.cronzph.salarytracker.ui.AppDialog;
+import com.cronzph.salarytracker.ui.SweetIconView;
 import com.cronzph.salarytracker.util.CutoffUtils;
 import com.cronzph.salarytracker.util.Money;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -306,7 +307,7 @@ public class EntryActivity extends AppCompatActivity {
     private void confirmDelete() {
         if (editing == null || editing.id <= 0) return;
         new AppDialog.Builder(this)
-                .icon(R.drawable.ic_delete)
+                .sweet(SweetIconView.TYPE_WARNING)
                 .title(R.string.confirm_delete_title)
                 .message(getString(R.string.confirm_delete_msg,
                         CutoffUtils.prettyDate(editing.workDate)))
